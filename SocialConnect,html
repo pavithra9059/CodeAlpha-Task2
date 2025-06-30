@@ -1,0 +1,737 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialConnect - Connect with the World</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);#800080
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            transform: scale(1.05);
+        }
+
+        .section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-selector {
+            margin-bottom: 20px;
+        }
+
+        .user-selector select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .user-selector select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 3rem;
+            color: #667eea;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .follow-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .follow-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .follow-btn.following {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+        }
+
+        .create-post {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .create-post textarea {
+            width: 100%;
+            min-height: 100px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        .create-post textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .post-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .post-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .post {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .post:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .post-info h4 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .post-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .post-content {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .like-btn, .comment-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .like-btn:hover, .comment-btn:hover {
+            background: #f0f2f5;
+        }
+
+        .like-btn.liked {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .comments-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .comment {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .add-comment {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .add-comment input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e1e5e9;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .add-comment input:focus {
+            border-color: #667eea;
+        }
+
+        .add-comment-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .add-comment-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .user-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-card-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin: 0 auto 15px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .nav {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+            
+            .profile-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .users-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 SocialConnect</h1>
+            <div class="nav">
+                <button class="nav-btn active" onclick="showSection('feed')">📱 Feed</button>
+                <button class="nav-btn" onclick="showSection('profile')">👤 Profile</button>
+                <button class="nav-btn" onclick="showSection('users')">👥 Users</button>
+<a href="abc.html"><button class="nav-btn active">🫱🏻‍🫲🏻 Connect</button></a>
+
+            </div>
+            <div class="user-selector">
+                <select id="currentUser" onchange="switchUser()">
+                    <option value="john">Ragulapadu Pavithra</option>
+                    <option value="jane">Derangula Swetha</option>
+                    <option value="mike">Pamuru Pujitha</option>
+                    <option value="sarah">Chamanchi PadmaSree</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Feed Section -->
+        <div id="feed" class="section active">
+            <div class="create-post">
+                <textarea id="postContent" placeholder="What's on your mind?"></textarea>
+                <button class="post-btn" onclick="createPost()">📝 Share Post</button>
+            </div>
+            <div id="postsContainer"></div>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profile" class="section">
+            <div id="profileCard"></div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="users" class="section">
+            <div class="users-grid" id="usersGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let currentUser = 'john';
+        let users = {
+            john: { name: 'Ragulapadu Pavithra', bio: 'Web Developer & Tech Enthusiast', followers: [], following: [], posts: 0, avatar: '👨‍💻' },
+            jane: { name: 'Derangula Swetha', bio: 'Designer & Creative Mind', followers: [], following: [], posts: 0, avatar: '👩‍🎨' },
+            mike: { name: 'Pamuru Pujitha', bio: 'Photographer & Traveler', followers: [], following: [], posts: 0, avatar: '📸' },
+            sarah: { name: 'Chamanchi PadmaSree', bio: 'Marketing Expert & Coffee Lover', followers: [], following: [], posts: 0, avatar: '☕' }
+        };
+
+        let posts = [];
+        let postIdCounter = 0;
+
+        // Initialize app
+        function init() {
+            loadSampleData();
+            renderFeed();
+            renderProfile();
+            renderUsers();
+        }
+
+        function loadSampleData() {
+            // Add some sample follows
+            users.john.following = ['jane', 'mike'];
+            users.jane.followers = ['john'];
+            users.mike.followers = ['john'];
+            users.jane.following = ['sarah'];
+            users.sarah.followers = ['jane'];
+
+            // Add sample posts
+            posts = [
+                {
+                    id: ++postIdCounter,
+                    author: 'jane',
+                    content: 'Just finished an amazing design project! 🎨 The client loved the modern approach with vibrant gradients.',
+                    timestamp: new Date(Date.now() - 3600000),
+                    likes: ['john', 'mike'],
+                    comments: [
+                        { author: 'john', content: 'Looks fantastic! Great work Jane!' },
+                        { author: 'mike', content: 'The colors are perfect 👌' }
+                    ]
+                },
+                {
+                    id: ++postIdCounter,
+                    author: 'mike',
+                    content: 'Captured this stunning sunset during my hike today. Nature never fails to amaze me! 🌅',
+                    timestamp: new Date(Date.now() - 7200000),
+                    likes: ['jane'],
+                    comments: [
+                        { author: 'jane', content: 'Breathtaking photo! Where was this taken?' }
+                    ]
+                },
+                {
+                    id: ++postIdCounter,
+                    author: 'john',
+                    content: 'Working on a new React project with some cool animations. The intersection observer API is incredibly powerful! 💻',
+                    timestamp: new Date(Date.now() - 10800000),
+                    likes: ['sarah'],
+                    comments: []
+                }
+            ];
+
+            users.jane.posts = 1;
+            users.mike.posts = 1;
+            users.john.posts = 1;
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(section).classList.add('active');
+            event.target.classList.add('active');
+
+            if (section === 'profile') renderProfile();
+            if (section === 'users') renderUsers();
+        }
+
+        function switchUser() {
+            currentUser = document.getElementById('currentUser').value;
+            renderFeed();
+            renderProfile();
+            renderUsers();
+        }
+
+        function createPost() {
+            const content = document.getElementById('postContent').value.trim();
+            if (!content) return;
+
+            const post = {
+                id: ++postIdCounter,
+                author: currentUser,
+                content: content,
+                timestamp: new Date(),
+                likes: [],
+                comments: []
+            };
+
+            posts.unshift(post);
+            users[currentUser].posts++;
+            document.getElementById('postContent').value = '';
+            renderFeed();
+            renderProfile();
+        }
+
+        function toggleLike(postId) {
+            const post = posts.find(p => p.id === postId);
+            const userIndex = post.likes.indexOf(currentUser);
+            
+            if (userIndex > -1) {
+                post.likes.splice(userIndex, 1);
+            } else {
+                post.likes.push(currentUser);
+            }
+            
+            renderFeed();
+        }
+
+        function toggleComments(postId) {
+            const commentsSection = document.getElementById(`comments-${postId}`);
+            commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function addComment(postId) {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const content = input.value.trim();
+            if (!content) return;
+
+            const post = posts.find(p => p.id === postId);
+            post.comments.push({
+                author: currentUser,
+                content: content
+            });
+
+            input.value = '';
+            renderFeed();
+        }
+
+        function toggleFollow(userId) {
+            const currentUserData = users[currentUser];
+            const targetUser = users[userId];
+            
+            const followingIndex = currentUserData.following.indexOf(userId);
+            
+            if (followingIndex > -1) {
+                currentUserData.following.splice(followingIndex, 1);
+                targetUser.followers = targetUser.followers.filter(f => f !== currentUser);
+            } else {
+                currentUserData.following.push(userId);
+                targetUser.followers.push(currentUser);
+            }
+            
+            renderProfile();
+            renderUsers();
+        }
+
+        function formatTime(timestamp) {
+            const now = new Date();
+            const diff = now - timestamp;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            return `${days}d ago`;
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('postsContainer');
+            container.innerHTML = posts.map(post => {
+                const author = users[post.author];
+                const isLiked = post.likes.includes(currentUser);
+                
+                return `
+                    <div class="post">
+                        <div class="post-header">
+                            <div class="post-avatar">${author.avatar}</div>
+                            <div class="post-info">
+                                <h4>${author.name}</h4>
+                                <div class="post-time">${formatTime(post.timestamp)}</div>
+                            </div>
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                        <div class="post-actions">
+                            <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${post.id})">
+                                ${isLiked ? '❤️' : '🤍'} ${post.likes.length}
+                            </button>
+                            <button class="comment-btn" onclick="toggleComments(${post.id})">
+                                💬 ${post.comments.length}
+                            </button>
+                        </div>
+                        <div id="comments-${post.id}" class="comments-section" style="display: none;">
+                            ${post.comments.map(comment => `
+                                <div class="comment">
+                                    <div class="comment-author">${users[comment.author].name}</div>
+                                    <div>${comment.content}</div>
+                                </div>
+                            `).join('')}
+                            <div class="add-comment">
+                                <input type="text" id="comment-input-${post.id}" placeholder="Write a comment..." 
+                                       onkeypress="if(event.key==='Enter') addComment(${post.id})">
+                                <button class="add-comment-btn" onclick="addComment(${post.id})">💬</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderProfile() {
+            const user = users[currentUser];
+            const profileCard = document.getElementById('profileCard');
+            
+            profileCard.innerHTML = `
+                <div class="profile-card">
+                    <div class="profile-avatar">${user.avatar}</div>
+                    <h2>${user.name}</h2>
+                    <p>${user.bio}</p>
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <div class="stat-number">${user.posts}</div>
+                            <div>Posts</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">${user.followers.length}</div>
+                            <div>Followers</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">${user.following.length}</div>
+                            <div>Following</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderUsers() {
+            const container = document.getElementById('usersGrid');
+            const otherUsers = Object.keys(users).filter(id => id !== currentUser);
+            
+            container.innerHTML = otherUsers.map(userId => {
+                const user = users[userId];
+                const isFollowing = users[currentUser].following.includes(userId);
+                
+                return `
+                    <div class="user-card">
+                        <div class="user-card-avatar">${user.avatar}</div>
+                        <h3>${user.name}</h3>
+                        <p>${user.bio}</p>
+                        <div style="margin: 15px 0;">
+                            <strong>${user.followers.length}</strong> followers
+                        </div>
+                        <button class="follow-btn ${isFollowing ? 'following' : ''}" 
+                                onclick="toggleFollow('${userId}')">
+                            ${isFollowing ? '✓ Following' : '+ Follow'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
